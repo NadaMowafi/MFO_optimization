@@ -23,7 +23,7 @@ def mfo_main():
     print('Choose a benchmark function:')
     for i, func in enumerate(benchmark_functions, 1):
         print(f'{i}: {func.__name__}')  # Display available benchmark functions
-    choice = int(input('Enter the function number: ')) - 1  # User selects a function
+    choice = int(input('Enter the function number: ')) - 1  # User selects a functionhjhjkh
 
     # Select the corresponding benchmark function
     benchmark_func = benchmark_functions[choice]
