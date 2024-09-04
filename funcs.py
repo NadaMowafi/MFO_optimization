@@ -157,10 +157,6 @@ def trid(x):
     product_part = np.sum(x[1:] * x[:-1])
     return sum_part - product_part
 
-def parse_user_function(func_str):
-    """Parse user input string into a callable function."""
-    try:
-        return lambda x: eval(func_str, {"x": x, "np": np})
-    except:
-        print("Invalid function. Please try again.")
-        return None
+
+    
+
