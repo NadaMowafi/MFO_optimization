@@ -13,6 +13,8 @@ def mfo_main():
     max_iterations = 1000  
     num_runs = 10  
     dim = 2  # Dimensions
+    early_stopping_threshold = 1e-6  # Threshold value
+    patience = 20  # Number of iterations with no improvement before stopping
 
     # Get the benchmark functions from the funcs module
     benchmark_functions = get_benchmark_functions()
@@ -57,6 +59,7 @@ def mfo_main():
         # To store the best solution and position at each run:
         best_solution = np.inf  # Initialize to infinity 
         best_position = np.zeros(dim)  # Initialize to zero vector
+        last_improvement_iteration = 0  # Counter for early stopping
 
         start_time = time.time() # Start time
 
@@ -75,6 +78,18 @@ def mfo_main():
                         best_position = moths[i].copy()
 
             all_moth_positions.append(moths.copy())    # Store the positions of moths for animation
+
+            # Check for early stopping:
+            if iteration > 0 and abs(prev_best_solution - best_solution) < early_stopping_threshold:
+                last_improvement_iteration += 1
+                if last_improvement_iteration >= patience:
+                    print(f"Early stopping at iteration {iteration + 1} due to lack of improvement.")
+                    break
+            else:
+                last_improvement_iteration = 0
+
+            # Store the best solution from the previous iteration
+            prev_best_solution = best_solution
 
             # Results:
             n_flames = round(n_moths - iteration * (n_moths - 1) / max_iterations)
