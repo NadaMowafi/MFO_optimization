@@ -11,7 +11,7 @@ def mfo_main():
     # parameters:
     n_moths = 50  
     max_iterations = 1000  
-    num_runs = 10  
+    num_runs = 10
     dim = 2  # Dimensions
     early_stopping_threshold = 1e-6  # Threshold value
     patience = 20  # Number of iterations with no improvement before stopping
@@ -124,7 +124,7 @@ def mfo_main():
     print(f'Standard deviation of best solutions: {std_result:.4f}')
 
     # 3D Plot of the benchmark function and best positions:
-    plot_3d_function(benchmark_func, lb, ub, best_solutions)
+    plot_3d_function(benchmark_func, lb, ub, best_solutions,all_moth_positions)
 
     # Plot the moth positions before and after optimization:
     plot_before_after_optimization(initial_moths, moths, best_solutions)
@@ -148,7 +148,8 @@ def get_benchmark_functions():
     return [getattr(funcs, f) for f in dir(funcs) if callable(getattr(funcs, f)) and not f.startswith("_")]
 
 # 3D part:
-def plot_3d_function(func, lb, ub, best_positions):
+4# 3D part with animation:
+def plot_3d_function(func, lb, ub, best_positions, all_moth_positions):
     # Grid to plot the function:
     x = np.linspace(lb, ub, 100)
     y = np.linspace(lb, ub, 100)
@@ -165,16 +166,30 @@ def plot_3d_function(func, lb, ub, best_positions):
     ax = fig.add_subplot(111, projection='3d')
     ax.plot_surface(X, Y, Z, cmap='viridis', alpha=0.7)  # Surface plot of the function
     
-    # Plot the best positions
+    # Scatter for moths' positions (empty initially for animation)
+    scat = ax.scatter([], [], [], color='red', marker='o', s=50, label='Moths')
+
+    # Plot the best positions as final points
     best_positions = np.array(best_positions)
     func_values = np.array([func(pos) for pos in best_positions])
-    ax.scatter(best_positions[:, 0], best_positions[:, 1], func_values, color='b', marker='o', s=100, label='Best Solutions')
+    ax.scatter(best_positions[:, 0], best_positions[:, 1], func_values, color='blue', marker='x', s=100, label='Best Solutions')
 
     ax.set_title(f'3D Plot of {func.__name__}')
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Objective Function')
     plt.legend()
+
+    # Animation update function
+    def update(frame):
+        moth_positions = all_moth_positions[frame]
+        func_values = np.array([func(pos) for pos in moth_positions])
+        scat._offsets3d = (moth_positions[:, 0], moth_positions[:, 1], func_values)
+        return scat,
+
+    # Create animation
+    ani = animation.FuncAnimation(fig, update, frames=len(all_moth_positions), blit=False, repeat=False)
+
     plt.show()
 
 # Plotting moths before and after optimization and best solutions:
