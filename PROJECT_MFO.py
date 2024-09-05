@@ -147,8 +147,7 @@ def update_moths(moths, best_position, lb, ub, n_flames, iteration, max_iteratio
 def get_benchmark_functions():
     return [getattr(funcs, f) for f in dir(funcs) if callable(getattr(funcs, f)) and not f.startswith("_")]
 
-# 3D part:
-4# 3D part with animation:
+# 3D part with animation:
 def plot_3d_function(func, lb, ub, best_positions, all_moth_positions):
     # Grid to plot the function:
     x = np.linspace(lb, ub, 100)
